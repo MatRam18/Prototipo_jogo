@@ -1,3 +1,4 @@
+#Pedaço para fazer a palhaçadinha ser real :)
 import os.path
 
 def ii(arq):

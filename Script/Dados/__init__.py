@@ -1,25 +1,67 @@
+#Importações
 import pygame
 from random import randint
 from random import choice
 
 #Resolução
-reso = (980, 720)
+larguraT = 980
+alturaT = 720
+res_tela = (larguraT, alturaT)
+
+
+primeira_vez = True
+
+def set_prime(valor: bool):
+    global primeira_vez
+    primeira_vez = valor
+
+home_call = False
+game_call = False
+gameover_call = False
+
+def set_call(call: int, valor: bool):
+    global gameover_call, game_call, home_call
+    if call == 1:
+        home_call = valor
+    elif call == 2:
+        game_call = valor
+    elif call == 3:
+        gameover_call = valor
 
 #recomecar
 recomecar = False
-tempo = 0
-Round = 1
-tempoU = 0
-cont = 0
+mili_seg = 0
+rounds = 1
+segundos = 0
+tempo_round = 0
 
-#Protagonista
-quant_vida = 3
-vel = 3
-vel_x = 0
-vel_y = 0
-loq_prota_x = 420
-loq_prota_y = 340
-personagem = pygame.Rect(loq_prota_x, loq_prota_y, 20, 20)
+#Protagonista (Rato)
+
+#invencibilidade
+tempo_inven = 3
+inven = False
+
+#Vida
+vida = 6
+
+#Velocidade
+velRat = 3
+velRatx = 0
+velRaty = 0
+
+#Localização do rato
+loq_rato_x = 480
+loq_rato_y = 340
+
+#Tamanho do rato
+alturaR = 35
+larguraR = 40
+
+#Criação da imagem do rato
+rato_img = pygame.image.load("Assents/image/Rato1.png")
+rato = rato_img.get_rect(center= [loq_rato_x, loq_rato_y])
+rato_img = pygame.transform.scale(rato_img, [larguraR, alturaR])
+
 
 #Barreiras
 left_pad = pygame.Rect(-1, -1, 30, 730)
@@ -27,51 +69,113 @@ right_pad = pygame.Rect(950, 1, 30, 730)
 up_pad = pygame.Rect(-1, -1, 990, 30)
 down_pad = pygame.Rect(-1, 690, 990, 30)
 
-#Oponente
-velO = 3
-velO2 = 4
-velO3 = 5
-velO4 = 2
-velO5 = 9
 
-alt = 25
-lar = 35
+#Oponente vertical
 
-loq_opo_y = randint(30, 300)
-loq_opo_y2 = randint(480, 680)
-loq_opo_y3 = randint(240, 450)
-loq_opo_y4 = choice([randint(40, 80), randint(550, 680)])
-loq_opo_y5 = randint(50, 680)
-loq_opoe_x = 50
+#Velocidade do oponente
+velVerRx = 3
+velVerAz = 4
+velVerVm = 5
+velVerVr = 2
+velVerLr = 9
+
+#Autura e largura do oponente
+alturaV = 30
+larguraV = 70
+
+#Localização do oponente
+loq_bilV_yRx = randint(30, 300)
+loq_bilV_yAz = randint(480, 680)
+loq_bilV_yVm = randint(240, 450)
+loq_bilV_yVr = choice([randint(40, 80), randint(550, 680)])
+loq_bilV_yLr = rato.y
+loq_bilV_x = 50
+
+#Tempo?
+tempo_opo = 1
+tem_apa = True
+
+#Imagem e geração dos oponentes
+
+#Laranja
+bil_img_esq_laranja = pygame.image.load("Assents/image/BilEsqLarP.png")
+bill_esq_laranja = bil_img_esq_laranja.get_rect(left= loq_bilV_x, top= loq_bilV_yLr)
+bil_img_esq_laranja = pygame.transform.scale(bil_img_esq_laranja, [larguraV, alturaV])
+
+#Azul
+bil_img_esq_azul = pygame.image.load("Assents/image/BilEsqAzuP.png")
+bill_esq_azul = bil_img_esq_azul.get_rect(left= loq_bilV_x, top= loq_bilV_yAz)
+bil_img_esq_azul = pygame.transform.scale(bil_img_esq_azul, [larguraV, alturaV])
+
+#Roxo
+bil_img_esq_roxo = pygame.image.load("Assents/image/BilEsqRoxP.png")
+bill_esq_roxo = bil_img_esq_roxo.get_rect(left= loq_bilV_x, top= loq_bilV_yRx)
+bil_img_esq_roxo = pygame.transform.scale(bil_img_esq_roxo, [larguraV, alturaV])
+
+#Verde
+bil_img_esq_verde = pygame.image.load("Assents/image/BilEsqVerdP.png")
+bill_esq_verde = bil_img_esq_verde.get_rect(left= loq_bilV_x, top= loq_bilV_yVr)
+bil_img_esq_verde = pygame.transform.scale(bil_img_esq_verde, [larguraV, alturaV])
+
+#Vermelho
+bil_img_esq_vermelho = pygame.image.load("Assents/image/BilEsqVermP.png")
+bill_esq_vermelho = bil_img_esq_vermelho.get_rect(left= loq_bilV_x, top= loq_bilV_yVm)
+bil_img_esq_vermelho = pygame.transform.scale(bil_img_esq_vermelho, [larguraV, alturaV])
 
 
+#Oponente Horizontal
 
-tempoO = 1
+#Velocidade do oponente
+velHorAm = 4
+velHorSa = 2
+velHorRo = 3
+velHorCi = 6
 
-oponenteY = pygame.Rect(loq_opoe_x, loq_opo_y, lar, alt)
-oponenteY2 = pygame.Rect(loq_opoe_x, loq_opo_y2, lar, alt)
-oponenteY3 = pygame.Rect(loq_opoe_x, loq_opo_y3 + 40, lar, alt)
-oponenteY4 = pygame.Rect(loq_opoe_x, loq_opo_y4, lar, alt)
-oponenteY5 = pygame.Rect(loq_opoe_x, loq_opo_y4 - 40, lar, alt)
+#Autura e largura do oponente
+alturaH = 70
+larguraH = 30
+
+#Localização do oponente
+loq_bilH_y = 630
+loq_billH_xAm = randint(420, 650)
+loq_bilH_xSa = randint(540, 950)
+loq_bilH_xRo = randint(80, 450)
+loq_bilH_xCi = choice([randint(50, 150), randint(800, 950)])
+
+#Imagem e geração dos oponentes
+
+#Salmão
+bil_img_ret_salmao = pygame.image.load("Assents/image/BilRetSalP.png")
+bill_ret_salmao = bil_img_ret_salmao.get_rect(left= loq_bilH_xSa, top= loq_bilH_y)
+bil_img_ret_salmao = pygame.transform.scale(bil_img_ret_salmao, [larguraH, alturaH])
+
+#Rosa
+bil_img_ret_rosa = pygame.image.load("Assents/image/BilRetRosP.png")
+bill_ret_rosa = bil_img_ret_rosa.get_rect(left= loq_bilH_xRo, top= loq_bilH_y)
+bil_img_ret_rosa = pygame.transform.scale(bil_img_ret_rosa, [larguraH, alturaH])
+
+#Ciano
+bil_img_ret_ciano = pygame.image.load("Assents/image/BilRetCiaP.png")
+bill_ret_ciano = bil_img_ret_ciano.get_rect(left= loq_bilH_xCi, top= loq_bilH_y)
+bil_img_ret_ciano = pygame.transform.scale(bil_img_ret_ciano, [larguraH, alturaH])
+
+#Amarelo
+bil_img_ret_amarelo = pygame.image.load("Assents/image/BilRetAmaP.png")
+bill_ret_amarelo = bil_img_ret_amarelo.get_rect(left= loq_billH_xAm, top= loq_bilH_y)
+bil_img_ret_amarelo = pygame.transform.scale(bil_img_ret_amarelo, [larguraH, alturaH])
 
 
-velP = 4
-velP2 = 2
-velP3 = 3
-velP4 = 6
-
-
-alt2 = 35
-lar2 = 25
-
-loq_opox_y = 630
-loq_opo_x = randint(420, 650)
-loq_opo_x2 = randint(540, 950)
-loq_opo_x3 = randint(80, 450)
-loq_opo_x4 = choice([randint(50, 150), randint(800, 950)])
-
-oponenteX = pygame.Rect(loq_opo_x, loq_opox_y, lar2, alt2)
-oponenteX2 = pygame.Rect(loq_opo_x2, loq_opox_y, lar2, alt2)
-oponenteX3 = pygame.Rect(loq_opo_x3, loq_opox_y, lar2, alt2)
-oponenteX4 = pygame.Rect(loq_opo_x3, loq_opox_y, lar2, alt2)
+#Parte que define as váriaveis do jogo
+p_recomecar = p_mili_seg = p_rounds = p_segundos = p_cont = p_tempo_round = p_tempo_inven = p_inven = p_vida = ""
+p_velVerRx = p_velVerAz = p_velVerVm = p_velVerVr = p_velVerLr = ""
+p_alturaV = p_larguraV = ""
+p_loq_bilV_yRx = p_loq_bilV_yAz = p_loq_bilV_yVm = p_loq_bilV_yVr = p_loq_bilV_yLr = p_loq_bilV_x = ""
+p_bill_esq_laranja = p_bil_img_esq_laranja = ""
+p_bill_esq_azul = p_bil_img_esq_azul = p_bill_esq_roxo = p_bil_img_esq_roxo = ""
+p_bill_esq_verde = p_bil_img_esq_verde = p_bill_esq_vermelho = p_bil_img_esq_vermelho = ""
+p_velHorAm = p_velHorSa = p_velHorRo = p_velHorCi = ""
+p_alturaH = p_larguraH = ""
+p_loq_bilH_y = p_loq_billH_xAm = p_loq_bilH_xSa = p_loq_bilH_xRo = p_loq_bilH_xCi = ""
+p_bill_ret_salmao = p_bil_img_ret_salmao = p_bill_ret_rosa = p_bil_img_ret_rosa = p_bill_ret_ciano = ""
+p_bil_img_ret_ciano = p_bill_ret_amarelo = p_bil_img_ret_amarelo = ""
 

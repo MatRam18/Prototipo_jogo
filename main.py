@@ -1,3 +1,3 @@
-import Menu
+from Script.Tela import home
 
-Menu.Tela_Inicial()
+home.play()
